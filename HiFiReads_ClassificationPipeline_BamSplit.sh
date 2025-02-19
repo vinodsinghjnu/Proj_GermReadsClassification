@@ -14,7 +14,7 @@ Ref='/home/vinodsingh/mutationalscanning/Workspaces/vinod/reference/hg38/hg38.fa
 trainData="${baseDir}/CpG_binomial_trainData/sorted_Cov.g5_Binomial_parameters_allCellTypes.bed.gz"
 
 # Define directories
-codeDir='/faststorage/project/mutationalscanning/Workspaces/vinod/codes/Proj_GermReadsClassification/src/'
+codeDir='/home/vinodsingh/mutationalscanning/Workspaces/vinod/codes/Proj_GermReadsClassification/src/'
 dataName='ob2v'
 baseDir='/home/vinodsingh/mutationalscanning/Workspaces/vinod/'
 DataDir="${baseDir}/${dataName}_chrBAMs_${GenomeAssembly}_test/"
