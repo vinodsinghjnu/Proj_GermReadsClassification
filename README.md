@@ -4,16 +4,16 @@ This pipeline is designed for the SLURM workload manager.
 Please modify it to suit your specific scheduling system or requirements.
 
 
-## Packages required
 
- - **Linux Packages:** GNU parallel 20240722, samtools 1.16.1, picard 3.0.0, R 4.2.3
- - **R-packages:**  optparse 1.7.5,  parallel 4.2.3, plyranges 1.18.0 , EnvStats 3.0.0, tibble 3.2.1, gtools 3.9.4, patchwork 1.3.0, GA 3.2.3, ggplot2 3.5.1 , BSgenome.Hsapiens.UCSC.hg38 1.4.5, BSgenome 1.66.3, Biostrings 2.66.0, Rsamtools, GenomicAlignments 1.34.1, rtracklayer 1.58.0, (Detailed in "Rsession_info.txt")
 
-## Step 0:  Create conda environments to run the script
+## Step 0: Build conda environments to run the script
  
- - **GermReadsClassification_Renv:** conda env create -f test_GermReadsClassification_Renv.yml
- - **GermReadsClassification_NGSenv:** conda env create -f test_GermReadsClassification_NGSenv.yml
+- **GermReadsClassification_Renv:** conda env create -f test_GermReadsClassification_Renv.yml
+- **GermReadsClassification_NGSenv:** conda env create -f test_GermReadsClassification_NGSenv.yml
 
+- **Packages used in to build conda environment**
+  - **Linux Packages:** GNU parallel 20240722, samtools 1.16.1, picard 3.0.0, R 4.2.3 (GermReadsClassification_NGSenv)
+  - **R-packages:**  optparse 1.7.5,  parallel 4.2.3, plyranges 1.18.0 , EnvStats 3.0.0, tibble 3.2.1, gtools 3.9.4, patchwork 1.3.0, GA 3.2.3, ggplot2 3.5.1 , BSgenome.Hsapiens.UCSC.hg38 1.4.5, BSgenome 1.66.3, Biostrings 2.66.0, Rsamtools, GenomicAlignments 1.34.1, rtracklayer 1.58.0, (Detailed in "Rsession_info.txt") (GermReadsClassification_Renv)
 
 ## Step 1: Setup and Variables
 
