@@ -1,9 +1,9 @@
 # HiFi Reads Classification Pipeline
 
+This method was trained on published methylation data from sorted cell types of human spermatogenesis and somatic proxies (blood and neurons). We can reliably classify the HiFi reads to somatic versus germline.
+
 This pipeline is designed for the SLURM workload manager.
 Please modify it to suit your specific scheduling system or requirements.
-
-
 
 
 ## Step 0: Build conda environments to run the script
