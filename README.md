@@ -11,7 +11,7 @@ Please modify it to suit your specific scheduling system or requirements.
 - **GermReadsClassification_Renv:** conda env create -f test_GermReadsClassification_Renv.yml
 - **GermReadsClassification_NGSenv:** conda env create -f test_GermReadsClassification_NGSenv.yml
 
-- **Packages used in to build conda environment**
+- **Packages used to build conda environment**
   - **Linux Packages:** GNU parallel 20240722, samtools 1.16.1, picard 3.0.0, R 4.2.3 (GermReadsClassification_NGSenv)
   - **R-packages:**  optparse 1.7.5,  parallel 4.2.3, plyranges 1.18.0 , EnvStats 3.0.0, tibble 3.2.1, gtools 3.9.4, patchwork 1.3.0, GA 3.2.3, ggplot2 3.5.1 , BSgenome.Hsapiens.UCSC.hg38 1.4.5, BSgenome 1.66.3, Biostrings 2.66.0, Rsamtools, GenomicAlignments 1.34.1, rtracklayer 1.58.0, (Detailed in "Rsession_info.txt") (GermReadsClassification_Renv)
 
@@ -28,7 +28,7 @@ Ref='/home/vinodsingh/mutationalscanning/Workspaces/vinod/reference/hg38/hg38.fa
 
 
 # Define directories
-projDir='/faststorage/project/mutationalscanning/Workspaces/vinod/codes/Proj_GermReadsClassification/'
+projDir='/home/vinodsingh/mutationalscanning/Workspaces/vinod/codes/Proj_GermReadsClassification/'
 codeDir="${projDir}/src/"
 dataName='ob2v'
 baseDir='/home/vinodsingh/mutationalscanning/Workspaces/vinod/'
