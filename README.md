@@ -5,6 +5,11 @@ This method was trained on published methylation data from sorted cell types of 
 This pipeline is designed for the SLURM workload manager.
 Please modify it to suit your specific scheduling system or requirements.
 
+## Training dataset format
+
+- We used BWA-METH pipeline to get per-base CpG methylation metric from EM-Seq / BS-Seq fastq files used for training our model. https://github.com/vinodsinghjnu/BWA_METH_pipeline
+- Format the output in the format of "test_train.bed.gz" file
+
 
 ## Step 0: Build conda environments to run the script
  
@@ -294,10 +299,6 @@ rm -r 04_HiFiReadsLL_InCellTypes_ByChunk/Reads_likelihood_chr*
 
 ```
 
-## Training dataset format
-
-- We used BWA-METH pipeline to get per-base CpG methylation metric from EM-Seq / BS-Seq fastq files used for training our model. https://github.com/vinodsinghjnu/BWA_METH_pipeline
-- Format the output in desired format of "test_train.bed.gz"
 
 ---
 This Markdown file contains all the required Bash scripts for running the HiFi Reads Classification Pipeline. Make sure to execute them in order within an SLURM-managed HPC environment.
