@@ -79,7 +79,7 @@ GA <- ga(type = "real-valued",
          #lower = c(1,0), upper = c(50, 1),
          #monitor = if(interactive()) gaMonitor else FALSE,
          popSize = 50, pmutation=0.03, maxiter = 10000, run=500,
-         keepBest = TRUE, seed = 123, parallel = 6)
+         keepBest = TRUE, seed = 123, parallel = FALSE)
 summary(GA)
 #plot(GA)
 
@@ -100,7 +100,7 @@ saveRDS(my_paraf, file = gsub(".tsv$", ".rds", OUTFILE))
 
 
 # plot data #
-my.plot_df=tibble(x=x_ticks,obs=l_beta, um=my.um, m=my.m, est=my.mix_um_m_f )
+my.plot_df=tibble(x=x_ticks,obs=l_beta, um=my.um, m=my.m, est=my.mix_um_m )
 my.plot_df.melt=reshape2::melt(my.plot_df, measure.vars = c('obs', 'um', 'm','est') )
 my.plot_df.melt$variable=factor(my.plot_df.melt$variable, levels = c('um','m','obs','est' ))
 

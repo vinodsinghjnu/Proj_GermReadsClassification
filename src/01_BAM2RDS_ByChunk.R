@@ -9,7 +9,7 @@ option_list = list(
               help="OUT data directory", metavar="character")
 );
 ## Libraries required##
-library('Rsamtools', quietly = T);library(GenomicAlignments,quietly = T);library(rtracklayer,quietly = T); library(logr,quietly = T)
+library('Rsamtools', quietly = T);library(GenomicAlignments,quietly = T);library(rtracklayer,quietly = T)
 library('parallel',quietly = T)
 
 ## INPUTS ##

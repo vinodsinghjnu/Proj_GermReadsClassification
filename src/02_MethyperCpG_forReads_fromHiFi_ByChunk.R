@@ -15,7 +15,7 @@ option_list = list(
               help="number of CPU cores to use", metavar="number")
 );
 
-library('Rsamtools', quietly = T);library(GenomicAlignments,quietly = T);library(rtracklayer,quietly = T); library(logr,quietly = T)
+library('Rsamtools', quietly = T);library(GenomicAlignments,quietly = T);library(rtracklayer,quietly = T);
 library(BSgenome.Hsapiens.UCSC.hg38,quietly = T); library(Biostrings,quietly = T); library(parallel,quietly = T); library(BSgenome,quietly = T)
 
 

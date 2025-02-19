@@ -69,8 +69,8 @@ max_Ind_n_Val_awk_body='NR >1 {
 
 
 # Calculate maxLL_Germ
-cat "$INPUT_FILE" | cut -f 3-7  | awk "$max_Ind_n_Val_awk_body" > ${tempDir}/tmp_maxLL_Germ.txt
-cat "$INPUT_FILE" | cut  -f 8-9  | awk "$max_Ind_n_Val_awk_body" > ${tempDir}/tmp_maxLL_noGerm.txt
+cat "$INPUT_FILE" | cut -f 4-8  | awk "$max_Ind_n_Val_awk_body" > ${tempDir}/tmp_maxLL_Germ.txt
+cat "$INPUT_FILE" | cut  -f 9-10  | awk "$max_Ind_n_Val_awk_body" > ${tempDir}/tmp_maxLL_noGerm.txt
 
 # Join the columns and save as a TSV file
 paste -d $'\t' ${tempDir}/tmp_maxLL_Germ.txt ${tempDir}/tmp_maxLL_noGerm.txt | tr ',' '\t' > ${tempDir}/tmp.tsv # replcae coma by tab seperator
@@ -90,7 +90,7 @@ paste -d $'\t' $INPUT_FILE ${tempDir}/tmp_ll_data.tsv > $OUTPUT_FILE
 awk -F'\t' 'BEGIN {OFS="\t"} NR==1 {print $0, "germ"; next} {print $0, ($(NF-1) > 0 ? "TRUE" : "FALSE")}' "$OUTPUT_FILE" > "${OUTPUT_FILE}2"
 mv "${OUTPUT_FILE}2" "$OUTPUT_FILE"
 head $OUTPUT_FILE | column -t
-head $OUTPUT_FILE | cat -t
+#head $OUTPUT_FILE | cat -t
 
 
 
@@ -111,7 +111,7 @@ germ_frac() {
     return 1
   fi
 
-  all_reads=$(awk -v ll="$ll_th" 'NR >1 && $NF > ll {count++} END {print count}' "$file")
+  all_reads=$(awk -v ll="$ll_th" 'NR >1 && $(NF-1) > ll {count++} END {print count}' "$file")
   totalreadsInFile=$(cat "$file" | wc -l)
   
   # Handle case where all_reads could be zero
@@ -121,7 +121,7 @@ germ_frac() {
   fi
 
   #all_reads=$(cat $file | awk -v ll="$ll_th" 'NR >1 {if($NF > ll) print $NF}' | wc -l)
-  germ_reads=$(cat $file | awk -v ll="$ll_th" 'NR >1 {if($(NF-1) > ll) print $(NF-1)}' | wc -l)
+  germ_reads=$(cat $file | awk -v ll="$ll_th" 'NR >1 {if($(NF-1) > ll && $NF=="TRUE") print $(NF-1)}' | wc -l)
   germ_frac=$(echo "scale=3;($germ_reads/$all_reads)*100" | bc)
   reads_remained=$(echo "scale=3;($all_reads/$totalreadsInFile)*100" | bc)
   echo "germFrac at ll> $ll_th = $germ_frac , readsRemained= $reads_remained"

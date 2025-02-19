@@ -1,4 +1,4 @@
-library("optparse");library(tictoc); library(parallel); library(plyranges)
+library("optparse"); library(parallel); library(plyranges); library(gtools);
 
 
 option_list = list(
@@ -13,7 +13,7 @@ option_list = list(
   make_option(c("-D", "--DATANAME"), type="character", default=NULL,
               help="name of the dataset", metavar="character"),
   make_option(c("-T", "--TRAINDATA"), type="character", default=NULL,
-              help="Traning data set (rds file)", metavar="character"),
+              help="Traning data set (BED file)", metavar="character"),
   make_option(c("-P", "--PARAMETERS"), type="character", default=NULL,
               help="Parameters TSV file, Cols1: alpha, col2: beta, col3:weight, for methylated comp ", metavar="character"),
   make_option(c("-N", "--NCORES"), type="integer", default=NULL,
@@ -80,6 +80,44 @@ shapePara=betaDist.shapePara[DATANAME,]
   fastmatch::fmatch(x, table, nomatch = 0L) > 0L
 }
 
+### read training bed file to gr rnages ##
+
+read_bedFile2Gr <- function(bed_file, chr) {
+  # Read the BED file with gzip support
+  df <- data.table::fread(cmd = paste("zcat", bed_file), header = TRUE, sep = "\t")
+
+  # Convert data frame to GRanges object
+  gr <- GRanges(
+    seqnames = df$`#chrom`,
+    ranges = IRanges(start = df$start + 1, end = df$end),
+    strand = "*"
+  )
+
+  # Preserve column names in metadata
+  mcols(gr) <- df[, c(
+    "Sperm_PrimarySpermatocytes_Reads.methyC.UmethyC",
+    "Sperm_UndiffSpermatogonia_Reads.methyC.UmethyC",
+    "Sperm_DiffSpermatogonia_Reads.methyC.UmethyC",
+    "Sperm_spermatids_Reads.methyC.UmethyC",
+    "Sperm_Mature_Reads.methyC.UmethyC",
+    "blood_cpg_data",
+    "neuron_cpg_data"
+  ), with = FALSE]
+
+  # Keep only the specified chromosome
+  gr <- keepSeqlevels(gr, chr, pruning.mode = "coarse")
+
+  # Name each region based on chromosome and start position
+  names(gr) <- paste0(seqnames(gr), '_', start(gr))
+
+  # Convert methylation data from "X:Y" format to numeric vectors
+  for (col in colnames(mcols(gr))) {
+    mcols(gr)[[col]] <- lapply(mcols(gr)[[col]], function(x) as.numeric(unlist(strsplit(x, ":"))))
+  }
+
+  return(gr)
+}
+
 
 
 ## Likelihood function #
@@ -112,6 +150,7 @@ LL_forEachCellType=function(r_data,x, f_muenster_cpg_data_chunk)
   ll_allCpG_ofRead=c()
   ll_allCpG_ofRead[1]=r_data$readname
   ll_allCpG_ofRead[2]=r_data$chr
+  ll_allCpG_ofRead[3]=r_data$start
   p=read_CpGMethyCounts_fromTrain$MethyProb_fromHiFi # methy P for the read
   p[which(p==0)]= .Machine$double.eps
   rm(r_data)
@@ -127,17 +166,13 @@ LL_forEachCellType=function(r_data,x, f_muenster_cpg_data_chunk)
     rm(MethyCountData)
     r_cnts=mC_cnts+umC_cnts
 
-    # finalised after agreement ##
     ll_perCpG=log((dbeta(p,shapePara[,'ms1'],shapePara[,'ms2']) * ((mC_cnts + shapePara[,'mWeight']) / (r_cnts +1)))+ (dbeta(p,shapePara[,'ms2'],shapePara[,'ms1']) * ((umC_cnts + (1-shapePara[,'mWeight'])) / (r_cnts +1))))
-    ##((1/v) * (1-p)^(v-1) * (mC_cnts +1) / (r_cnts +2)) + ((1/v) * (p)^(v-1) * (umC_cnts +1) / (r_cnts +2))
-
-
-    ll_allCpG_ofRead[d+2]=sum(ll_perCpG)
+    ll_allCpG_ofRead[d+3]=sum(ll_perCpG)
 
   }
 
-  ll_allCpG_ofRead[d+3]=CpGs_onRead
-  ll_allCpG_ofRead[d+4]=badCpGs_onRead
+  ll_allCpG_ofRead[d+4]=CpGs_onRead
+  ll_allCpG_ofRead[d+5]=badCpGs_onRead
   ll_allCpG_ofRead
 }
 
@@ -165,7 +200,7 @@ calculate_chunk=function(idx){
   d=nrow(chunk.LL_of_readInCellType_list_df)
   rm(chunk.LL_of_readInCellType_list_df)
   gc()
-  print(paste0('>Memory Used (GB) : ',signif(pryr::mem_used()/(10^9),3) ))
+  #print(paste0('>Memory Used (GB) : ',signif(pryr::mem_used()/(10^9),3) ))
 
   if(d == c_size){
     #return("success!")
@@ -185,8 +220,13 @@ calculate_chunk=function(idx){
 #TRAINDATA='/home/vinodsingh/mutationalscanning/Workspaces/vinod/CpG_binomial_trainData/'
 #TRAINDATA='/home/vinodsingh/mutationalscanning/Workspaces/vinod/CpG_binomial_trainData/sorted_Cov.g5_Binomial_parameters_allCellTypes.rds'
 print(CHR)
-muenster_cpg_data=readRDS(TRAINDATA) %>% plyranges::filter(seqnames == CHR)
+#muenster_cpg_data=readRDS(TRAINDATA) %>% plyranges::filter(seqnames == CHR)
+muenster_cpg_data=read_bedFile2Gr(bed_file=TRAINDATA, chr=CHR)
+
 print(paste0('>TRAINDATA:',TRAINDATA))
+
+
+    
 
 
 ## list INPUT chunk files  ##
@@ -236,7 +276,7 @@ f2 <- gtools::mixedsort(Sys.glob(paste0(OUTDIR,"/ReadsLL_chunk*_out.RDS")))
 LL_of_readInCellType_list_df_merge=do.call('rbind', lapply(f2,  readRDS))
 LL_of_readInCellType_list_df_merge=as.data.frame(LL_of_readInCellType_list_df_merge)
 LL_of_readInCellType_list_df_merge=cbind(LL_of_readInCellType_list_df_merge, warnings_data)
-colnames(LL_of_readInCellType_list_df_merge)=c('readsID','chr', mcolsNames_muenster_cpg_data, 'CpGs_onRead','badCpGs_onRead', 'refCpGOvl_perc' )
+colnames(LL_of_readInCellType_list_df_merge)=c('readsID','chr', 'start',mcolsNames_muenster_cpg_data, 'CpGs_onRead','badCpGs_onRead', 'refCpGOvl_perc' )
 
 # convert columns to numeric #
 for(i in seq(3,ncol(LL_of_readInCellType_list_df_merge)-2))
@@ -263,7 +303,7 @@ outFile2=paste0(dirname(OUTDIR),'/',DATANAME,'_',GenomeAssembly,'_',CHR,'_LL_of_
 write.table(LL_of_readInCellType_list_df_merge, file = outFile2,sep = '\t', quote = F, append = F, row.names = F)
 
 
-temp_df=LL_of_readInCellType_list_df_merge[,seq(3,9)]
+temp_df=LL_of_readInCellType_list_df_merge[,seq(4,10)]
 mx=sapply(seq(1,nrow(temp_df)), function(x) which.max(temp_df[x,]))
 maxind_tables=table(mx)
 print(paste0('>>germ frac: ', sum(maxind_tables[c(1,2,3,4,5)])/sum(maxind_tables)))

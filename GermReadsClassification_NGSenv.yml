@@ -1,0 +1,25 @@
+name: GermReadsClassification_NGSenv
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-base=4.2
+  - samtools>=1.16
+  - htslib
+  - picard>=3.0
+  - perl
+  - openjdk
+  - parallel
+  - gsl
+  - make
+  - gcc_impl_linux-64
+  - gxx_impl_linux-64
+  - gfortran_impl_linux-64
+  - curl
+  - openssl
+  - zlib
+  - bzip2
+  - xz
+  - cairo
+  - pango

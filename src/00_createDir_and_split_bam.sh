@@ -6,6 +6,7 @@ Options: \n \
   [-B <BAM file (String)>]\n \
   [-S <sample Name(Sample ID)>]\n \
   [-G <GenomeAssembly name (hg38) >]\n \
+  [-R <Reference fasta (hg38.fasta) >]\n \
   [-O <Output Dir (Dir Path)>]\n \
   [-N <Number of ncpus (Int), Defualt: 2 >]\n \
   [-h <Help>]" 1>&2; exit 1; }
@@ -13,12 +14,13 @@ Options: \n \
 ncpus=4 # default ncpus
 
 
-while getopts B:S:G:O:N: flag
+while getopts B:S:G:R:O:N: flag
 do
     case "${flag}" in
         B) bamPath=${OPTARG};;
         S) SampleName=${OPTARG};;
         G) GenomeAssembly=${OPTARG};;
+        R) ref=${OPTARG};;
         O) outDir=${OPTARG};;
         N)
           # Validate that the argument is a number
@@ -44,6 +46,10 @@ elif [[ -z "$GenomeAssembly" ]]; then
     echo -e "\nError: The -G option is mandatory and was not provided." >&2
     usage
     exit 1
+elif [[ -z "$ref" ]]; then
+    echo -e "\nError: The -R option is mandatory and was not provided." >&2
+    usage
+    exit 1
 elif [[ -z "$outDir" ]]; then
     echo -e "\nError: The -O option is mandatory and was not provided." >&2
     usage
@@ -55,6 +61,7 @@ echo ">== Parameters =="
 echo "bamPath: $bamPath";
 echo "SampleName: $SampleName";
 echo "GenomeAssembly: $GenomeAssembly";
+echo "ref: $ref";
 echo "OutDir: $outDir";
 echo "ncpus avalaiable: $ncpus";
 echo "====<"
@@ -65,7 +72,6 @@ sleep 20
 
 
 
-##
 
 # Function to handle errors
 error_handler() {
@@ -78,30 +84,8 @@ trap 'error_handler' ERR
 
 ##
 
-source /home/vinodsingh/miniforge3/bin/activate samtools_1.16.1
-
-
-#outDir=$(realpath $outDir)
-#mkdir $outDir
-# #bamPath=$1
-# #SampleName=$2
-# #GenomeAssembly=$3
-# #outDir=$4
-
-# bamPath=/faststorage/project/mutationalscanning/DerivedData/bam/HiFi/human/reference/${GenomeAssembly}
-# wd=/home/vinodsingh/mutationalscanning/Workspaces/vinod/${SampleName}_chrBAMs_${GenomeAssembly}/
- ref='/home/vinodsingh/mutationalscanning/Workspaces/vinod/reference/hg38/hg38.fasta'
-
-# source $HOME/miniforge3/etc/profile.d/conda.sh
-# conda activate "samtools_1.16.1"
 
 cd $outDir
-
-#ln -s ${bamPath}/${SampleName}_${GenomeAssembly}.bam ${SampleName}_${GenomeAssembly}.bam
-#ln -s ${bamPath}/${SampleName}_${GenomeAssembly}.bam.bai ${SampleName}_${GenomeAssembly}.bam.bai
-#ls -l
-#filename=${outDir}/${SampleName}_${GenomeAssembly}.bam
-
 filename=${bamPath}
 
 
