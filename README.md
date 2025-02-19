@@ -282,7 +282,7 @@ cat ${OUTDIR_05}/germFrac2.txt | column -t
 
 ```
 
-- cleanup
+## Step 9: Cleanup intermidiate files
 
 ```bash
 rm 00_BAMChunks/${dataName}_hg38_bamChunks_chr*/sorted.chunk*.bam
