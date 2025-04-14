@@ -47,7 +47,7 @@ awk_body4="{print $s4}"
 echo -e "\n"
 ##
 
-source /home/vinodsingh/miniforge3/bin/activate "samtools_1.16.1"
+#source /home/vinodsingh/miniforge3/bin/activate "samtools_1.16.1"
 
 
 
