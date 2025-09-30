@@ -319,7 +319,7 @@ If you use this code in your research, please cite:
 
 1.  Porsborg, Peter & Charmouh, Anders P & Singh, Vinod & Winge, Sofia & Hvilsom, Christina & Pelizzola, Marta & Laurentino, Sandra & Neuhaus, Nina & Hobolth, Asger & Bataillon, Thomas & Almstrup, Kristian & Besenbacher, Soren & Schierup, Mikkel. (2024). Insights into gene conversion and crossing-over processes from long-read sequencing of human, chimpanzee and gorilla testes and sperm. 10.1101/2024.07.05.601967.
 
- 2. Singh, V. (2025). *Proj_GermReadsClassification*. Zenodo. https://doi.org/10.5281/zenodo.1234567
+ 2. Singh, V. (2025). *Proj_GermReadsClassification*. Zenodo. https://doi.org/10.5281/zenodo.17233826
 
 
 **BibTeX:**
